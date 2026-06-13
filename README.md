@@ -1,28 +1,28 @@
-# Daily Report
+# Codex Personal
 
-Codex daily-report skill and the local automation it operates.
+Personal Codex skills and supporting local projects.
 
 ## Layout
 
 ```text
-app/                     Main report generator and image renderer
-youtube-liked-videos/    YouTube liked-video fetcher
-inoreader-opml/          OPML/RSS fetcher
-launchd/                 LaunchAgent plist template
-scripts/                 Install and uninstall scripts for launchd
-skills/daily-report/     Codex skill source
-requirements/            Python dependency lists
+skills/                  Codex skills installed into ~/.codex/skills
+projects/                Local automation or support projects used by skills
+projects/daily-report/   Daily report automation
 ```
 
-The Codex skill is installed through this symlink:
+Installed symlinks:
 
 ```text
-~/.codex/skills/daily-report -> ~/.codex/projects/daily-report/skills/daily-report
+~/.codex/skills/daily-report -> ~/.codex/codex-personal/skills/daily-report
+~/.codex/projects/daily-report -> ~/.codex/codex-personal/projects/daily-report
 ```
 
-This keeps the skill source in the same Git repository as the automation code.
+This keeps all personal Codex assets in one Git repository while preserving the
+paths used by existing automation.
 
-## Local setup
+## Daily Report
+
+Operational details are in `projects/daily-report/app/README.md`.
 
 Create virtual environments as needed:
 
@@ -58,5 +58,3 @@ Install the daily LaunchAgent:
 ```bash
 ~/.codex/projects/daily-report/scripts/install_launch_agent.sh
 ```
-
-Operational details are in `app/README.md`.

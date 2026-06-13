@@ -1,16 +1,18 @@
 .DS_Store
+**/.DS_Store
 __pycache__/
 *.py[cod]
 
 .env
 .venv/
 */.venv/
+**/.venv/
 
-app/logs/
-app/images/
-youtube-liked-videos/output/
-youtube-liked-videos/tmp_subs/
-inoreader-opml/output/
+projects/*/app/logs/
+projects/*/app/images/
+projects/*/youtube-liked-videos/output/
+projects/*/youtube-liked-videos/tmp_subs/
+projects/*/inoreader-opml/output/
 
 client_secret*.json
 token.json

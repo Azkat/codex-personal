@@ -131,7 +131,8 @@ def render(note_path: Path, out_path: Path) -> None:
     summary = bullets(section(report, "全体サマリー"))
     memo = section(report, "Obsidianメモ要約").splitlines()[0:2]
     rss = parse_table(section(report, "RSS 選抜10件"))[:10]
-    youtube = parse_table(section(report, "YouTube 高評価"))[:4]
+    youtube_section = section(report, "YouTube お気に入り") or section(report, "YouTube 高評価")
+    youtube = parse_table(youtube_section)[:4]
     raindrop = parse_table(section(report, "Raindrop"))[:5]
 
     width = 1600

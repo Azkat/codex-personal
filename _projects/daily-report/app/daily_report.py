@@ -450,7 +450,7 @@ def overall_summary(memo_summary: str, rss_picks: list[dict], youtube: list[dict
     fallback = {
         "bullets": [
             f"RSSは{len(rss_picks)}件を選抜。AI/プロダクト、音楽制作、サッカー、気になる読み物を中心に拾っています。",
-            f"YouTube高評価は{len(youtube)}件、Raindropは{len(raindrops)}件ありました。",
+            f"YouTubeお気に入りは{len(youtube)}件、Raindropは{len(raindrops)}件ありました。",
             f"Obsidianメモ: {memo_summary}",
         ]
     }
@@ -504,23 +504,23 @@ def build_report_from_parts(summary_bullets: list[str], memo_summary: str, rss_p
     else:
         lines.append("- 直近24時間の候補なし")
 
-    lines.extend(["", "### YouTube 高評価"])
+    lines.extend(["", "### YouTube お気に入り"])
     if youtube:
         lines.append("| 動画 | チャンネル | 概要 |")
         lines.append("|---|---|---|")
         for row in youtube[:10]:
-            summary = truncate(row.get("description", ""), 90) or "高評価した動画"
+            summary = truncate(row.get("description", ""), 90) or "お気に入り動画"
             lines.append(
                 f"| {table_cell(md_link(row.get('title', ''), row.get('url', '')))} | {table_cell(row.get('channel', ''))} | {table_cell(summary)} |"
             )
     else:
-        lines.append("- 直近24時間の高評価なし")
+        lines.append("- 直近24時間のお気に入りなし")
 
     lines.extend(["", "### Raindrop"])
     if raindrops:
         lines.append("| ブックマーク | タグ | 概要 |")
         lines.append("|---|---|---|")
-        for row in raindrops[:10]:
+        for row in raindrops:
             tags = ", ".join(row.get("tags", []))
             excerpt = truncate(row.get("excerpt", ""), 90) or "ブックマーク"
             lines.append(
@@ -566,7 +566,7 @@ def build_slack_payload(summary_bullets: list[str], memo_summary: str, rss_picks
         )
 
     if youtube:
-        blocks.extend([{"type": "divider"}, {"type": "section", "text": {"type": "mrkdwn", "text": "*YouTube 高評価*"}}])
+        blocks.extend([{"type": "divider"}, {"type": "section", "text": {"type": "mrkdwn", "text": "*YouTube お気に入り*"}}])
         for row in youtube[:5]:
             blocks.append(
                 {

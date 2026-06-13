@@ -1,39 +1,39 @@
 # Codex Personal
 
-Personal Codex skills and supporting local projects. The repository is intended
-to live directly at `~/.codex/skills`.
+個人用のCodex skillと、それを支えるローカル自動化プロジェクトを管理する
+リポジトリです。`~/.codex/skills` に直接cloneして使う前提です。
 
-Repository:
+リポジトリ:
 
 ```text
 https://github.com/Azkat/codex-personal.git
 ```
 
-## Layout
+## 構成
 
 ```text
-daily-report/            Personal Codex skill
-_projects/               Local automation or support projects used by skills
-_projects/daily-report/  Daily report automation
-.system/                 Codex system skills, ignored by Git
+daily-report/            個人用Codex skill
+_projects/               skillから使うローカル自動化・補助プロジェクト
+_projects/daily-report/  デイリーレポート自動化
+.system/                 Codex system skills。Git管理対象外
 ```
 
-Local compatibility symlink:
+互換用のローカルシンボリックリンク:
 
 ```text
 ~/.codex/projects/daily-report -> ~/.codex/skills/_projects/daily-report
 ```
 
-Personal skills are real directories under `~/.codex/skills`, not symlinks, so
-Codex can discover them directly.
+個人用skillは `~/.codex/skills` 配下の実ディレクトリとして置きます。
+symlinkにしないことで、Codexが直接検出できます。
 
 ## Daily Report
 
-Operational details are in `_projects/daily-report/app/README.md`.
+運用手順や設定の詳細は `_projects/daily-report/app/README.md` にあります。
 
-## Set Up On Another Mac
+## 別のMacでのセットアップ
 
-Clone this repository directly into Codex's personal skills directory:
+このリポジトリをCodexの個人用skillsディレクトリに直接cloneします。
 
 ```bash
 mkdir -p ~/.codex ~/.codex/projects
@@ -41,14 +41,13 @@ git clone https://github.com/Azkat/codex-personal.git ~/.codex/skills
 ln -s ~/.codex/skills/_projects/daily-report ~/.codex/projects/daily-report
 ```
 
-Create the symlink and local virtual environments:
+シンボリックリンクとローカル仮想環境を作成します。
 
 ```bash
 ~/.codex/skills/_projects/daily-report/scripts/setup_device.sh
 ```
 
-Secrets and local config live outside the repository and must be recreated per
-device:
+秘密情報とローカル設定はリポジトリ外に置きます。端末ごとに作り直します。
 
 ```text
 ~/.config/inoreader/
@@ -58,15 +57,15 @@ device:
 ~/.config/openai/api_key.txt
 ```
 
-## Local Environment
+## ローカル環境
 
-Recreate virtual environments whenever dependencies are missing:
+依存関係が足りない場合は、仮想環境を作り直します。
 
 ```bash
 ~/.codex/skills/_projects/daily-report/scripts/setup_device.sh
 ```
 
-Secrets and local config live outside the repository:
+秘密情報とローカル設定はリポジトリ外に置きます。
 
 ```text
 ~/.config/inoreader/
@@ -76,13 +75,13 @@ Secrets and local config live outside the repository:
 ~/.config/openai/api_key.txt
 ```
 
-## Run
+## 実行
 
 ```bash
 /usr/bin/python3 ~/.codex/projects/daily-report/app/daily_report.py
 ```
 
-Install the daily LaunchAgent:
+毎日のLaunchAgentをインストールします。
 
 ```bash
 ~/.codex/projects/daily-report/scripts/install_launch_agent.sh

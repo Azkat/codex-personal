@@ -8,11 +8,12 @@ __pycache__/
 */.venv/
 **/.venv/
 
-projects/*/app/logs/
-projects/*/app/images/
-projects/*/youtube-liked-videos/output/
-projects/*/youtube-liked-videos/tmp_subs/
-projects/*/inoreader-opml/output/
+.system/
+_projects/*/app/logs/
+_projects/*/app/images/
+_projects/*/youtube-liked-videos/output/
+_projects/*/youtube-liked-videos/tmp_subs/
+_projects/*/inoreader-opml/output/
 
 client_secret*.json
 token.json

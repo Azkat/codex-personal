@@ -1,34 +1,29 @@
 # Codex Personal
 
-Personal Codex skills and supporting local projects.
+Personal Codex skills and supporting local projects. The repository is intended
+to live directly at `~/.codex/skills`.
 
 ## Layout
 
 ```text
-skills/                  Codex skills installed into ~/.codex/skills
-projects/                Local automation or support projects used by skills
-projects/daily-report/   Daily report automation
+daily-report/            Personal Codex skill
+_projects/               Local automation or support projects used by skills
+_projects/daily-report/  Daily report automation
+.system/                 Codex system skills, ignored by Git
 ```
 
-Installed symlinks:
+Local compatibility symlink:
 
 ```text
-~/.codex/projects/daily-report -> ~/.codex/codex-personal/projects/daily-report
+~/.codex/projects/daily-report -> ~/.codex/skills/_projects/daily-report
 ```
 
-Skills are installed as real directories, not symlinks, because Codex skill
-discovery may not follow symlinks:
-
-```bash
-~/.codex/codex-personal/scripts/install_skills.sh
-```
-
-This keeps all personal Codex assets in one Git repository while preserving the
-paths used by existing automation.
+Personal skills are real directories under `~/.codex/skills`, not symlinks, so
+Codex can discover them directly.
 
 ## Daily Report
 
-Operational details are in `projects/daily-report/app/README.md`.
+Operational details are in `_projects/daily-report/app/README.md`.
 
 Create virtual environments as needed:
 

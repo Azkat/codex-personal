@@ -13,8 +13,14 @@ projects/daily-report/   Daily report automation
 Installed symlinks:
 
 ```text
-~/.codex/skills/daily-report -> ~/.codex/codex-personal/skills/daily-report
 ~/.codex/projects/daily-report -> ~/.codex/codex-personal/projects/daily-report
+```
+
+Skills are installed as real directories, not symlinks, because Codex skill
+discovery may not follow symlinks:
+
+```bash
+~/.codex/codex-personal/scripts/install_skills.sh
 ```
 
 This keeps all personal Codex assets in one Git repository while preserving the

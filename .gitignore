@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+
+.env
+.venv/
+*/.venv/
+
+app/logs/
+app/images/
+youtube-liked-videos/output/
+youtube-liked-videos/tmp_subs/
+inoreader-opml/output/
+
+client_secret*.json
+token.json
+*.log

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Daily Report"
+  short_description: "ローカル日次レポート自動化を保守"
+  default_prompt: "Use $daily-report to update or troubleshoot my local daily report automation."
+
+policy:
+  allow_implicit_invocation: true

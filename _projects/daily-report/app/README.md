@@ -128,13 +128,20 @@ launchctl kickstart -k gui/$(id -u)/com.atsushi.daily-report
 
 ## 別デバイスへ移すとき
 
-1. コピーする本体はこの1フォルダです。
+1. GitHubから `~/.codex/skills` にcloneします。
 
-```text
-~/.codex/projects/daily-report/
+```bash
+mkdir -p ~/.codex ~/.codex/projects
+git clone https://github.com/Azkat/codex-personal.git ~/.codex/skills
 ```
 
-2. 設定ファイルと秘密情報を作り直します。
+2. 互換リンクとPython環境を作ります。スクリプトは `~/.codex/projects/daily-report` を正規パスとして参照します。
+
+```bash
+~/.codex/skills/_projects/daily-report/scripts/setup_device.sh
+```
+
+3. 設定ファイルと秘密情報を作り直します。これらはGit管理しません。
 
 ```text
 ~/.config/inoreader/
@@ -143,19 +150,6 @@ launchctl kickstart -k gui/$(id -u)/com.atsushi.daily-report
 ~/.config/youtube/client_secret_*.json
 ~/.config/youtube/token.json
 ~/.config/openai/api_key.txt
-```
-
-3. Python環境は新デバイスで作り直します。venvは別Macへコピーせず、再作成してください。
-
-```bash
-python3 -m venv ~/.codex/projects/daily-report/youtube-liked-videos/.venv
-~/.codex/projects/daily-report/youtube-liked-videos/.venv/bin/python -m pip install --upgrade pip google-api-python-client google-auth-oauthlib
-
-python3 -m venv ~/.codex/projects/daily-report/inoreader-opml/.venv
-~/.codex/projects/daily-report/inoreader-opml/.venv/bin/python -m pip install --upgrade pip feedparser
-
-python3 -m venv ~/.codex/projects/daily-report/app/.venv
-~/.codex/projects/daily-report/app/.venv/bin/python -m pip install --upgrade pip pillow
 ```
 
 4. YouTube OAuthを新デバイスで再認証します。

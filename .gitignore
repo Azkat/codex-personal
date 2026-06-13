@@ -9,6 +9,7 @@ __pycache__/
 **/.venv/
 
 .system/
+.agents/
 _projects/*/app/logs/
 _projects/*/app/images/
 _projects/*/youtube-liked-videos/output/

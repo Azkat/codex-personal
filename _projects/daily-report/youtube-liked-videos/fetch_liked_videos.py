@@ -2,7 +2,9 @@
 import argparse
 import csv
 import json
+import sys
 from pathlib import Path
+from typing import Optional
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -12,11 +14,18 @@ from googleapiclient.discovery import build
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
 HOME = Path.home()
-DEFAULT_CLIENT_SECRET = Path(
-    HOME / ".config/youtube/client_secret_1033579931657-8m4k5ebaprj6mi6t2vk79qk3squ6v4pa.apps.googleusercontent.com.json"
-)
+YOUTUBE_CONFIG_DIR = HOME / ".config/youtube"
 DEFAULT_TOKEN = HOME / ".config/youtube/token.json"
 DEFAULT_OUTPUT_DIR = HOME / ".codex/projects/daily-report/youtube-liked-videos/output"
+
+
+def resolve_client_secret(client_secret: Optional[Path]) -> Path:
+    if client_secret:
+        return client_secret
+    matches = sorted(YOUTUBE_CONFIG_DIR.glob("client_secret_*.json"))
+    if not matches:
+        raise FileNotFoundError(f"No YouTube client secret found under {YOUTUBE_CONFIG_DIR}")
+    return matches[0]
 
 
 def load_credentials(client_secret: Path, token_path: Path) -> Credentials:
@@ -130,15 +139,19 @@ def write_outputs(videos: list[dict], output_dir: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--client-secret", type=Path, default=DEFAULT_CLIENT_SECRET)
+    parser.add_argument("--client-secret", type=Path, default=None)
     parser.add_argument("--token", type=Path, default=DEFAULT_TOKEN)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     args = parser.parse_args()
 
-    creds = load_credentials(args.client_secret, args.token)
+    creds = load_credentials(resolve_client_secret(args.client_secret), args.token)
     youtube = build("youtube", "v3", credentials=creds)
     write_outputs(fetch_liked_videos(youtube), args.output_dir)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as exc:
+        print(f"YouTube liked videos failed: {exc}", file=sys.stderr)
+        raise SystemExit(1)

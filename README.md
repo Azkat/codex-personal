@@ -3,6 +3,12 @@
 Personal Codex skills and supporting local projects. The repository is intended
 to live directly at `~/.codex/skills`.
 
+Repository:
+
+```text
+https://github.com/Azkat/codex-personal.git
+```
+
 ## Layout
 
 ```text
@@ -25,17 +31,39 @@ Codex can discover them directly.
 
 Operational details are in `_projects/daily-report/app/README.md`.
 
-Create virtual environments as needed:
+## Set Up On Another Mac
+
+Clone this repository directly into Codex's personal skills directory:
 
 ```bash
-python3 -m venv ~/.codex/projects/daily-report/app/.venv
-~/.codex/projects/daily-report/app/.venv/bin/python -m pip install -r ~/.codex/projects/daily-report/requirements/app.txt
+mkdir -p ~/.codex ~/.codex/projects
+git clone https://github.com/Azkat/codex-personal.git ~/.codex/skills
+ln -s ~/.codex/skills/_projects/daily-report ~/.codex/projects/daily-report
+```
 
-python3 -m venv ~/.codex/projects/daily-report/youtube-liked-videos/.venv
-~/.codex/projects/daily-report/youtube-liked-videos/.venv/bin/python -m pip install -r ~/.codex/projects/daily-report/requirements/youtube-liked-videos.txt
+Create the symlink and local virtual environments:
 
-python3 -m venv ~/.codex/projects/daily-report/inoreader-opml/.venv
-~/.codex/projects/daily-report/inoreader-opml/.venv/bin/python -m pip install -r ~/.codex/projects/daily-report/requirements/inoreader-opml.txt
+```bash
+~/.codex/skills/_projects/daily-report/scripts/setup_device.sh
+```
+
+Secrets and local config live outside the repository and must be recreated per
+device:
+
+```text
+~/.config/inoreader/
+~/.config/raindrop/token.txt
+~/.config/slack/webhooks
+~/.config/youtube/
+~/.config/openai/api_key.txt
+```
+
+## Local Environment
+
+Recreate virtual environments whenever dependencies are missing:
+
+```bash
+~/.codex/skills/_projects/daily-report/scripts/setup_device.sh
 ```
 
 Secrets and local config live outside the repository:

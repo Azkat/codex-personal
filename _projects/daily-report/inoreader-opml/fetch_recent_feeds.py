@@ -3,6 +3,7 @@ import argparse
 import csv
 import json
 import re
+import sys
 import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
@@ -143,4 +144,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as exc:
+        print(f"Inoreader OPML fetch failed: {exc}", file=sys.stderr)
+        raise SystemExit(1)

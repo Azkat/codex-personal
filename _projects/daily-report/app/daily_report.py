@@ -34,12 +34,27 @@ SLACK_WEBHOOKS_FILE = HOME / ".config/slack/webhooks"
 OPENAI_KEY_FILE = HOME / ".config/openai/api_key.txt"
 OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini")
 CODEX_CLI = Path(os.environ.get("CODEX_CLI", str(HOME / ".local/bin/codex")))
+CODEX_DISABLED = False
 START_MARKER = "<!-- daily-report:start -->"
 END_MARKER = "<!-- daily-report:end -->"
 
 
 def run(command: list[str]) -> None:
-    subprocess.run(command, check=True)
+    subprocess.run(command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+
+
+def python_command(venv_python: Path) -> str:
+    if venv_python.exists():
+        return str(venv_python)
+    return sys.executable
+
+
+def command_error_summary(exc: Exception) -> str:
+    if isinstance(exc, subprocess.CalledProcessError):
+        detail = (exc.stderr or "").strip().splitlines()
+        suffix = f": {detail[-1]}" if detail else ""
+        return f"exit code {exc.returncode}{suffix}"
+    return str(exc)
 
 
 def parse_dt(value: str) -> Optional[datetime]:
@@ -123,7 +138,8 @@ def llm_json(prompt: str, fallback: dict) -> dict:
 
 
 def codex_json(prompt: str) -> Optional[dict]:
-    if not CODEX_CLI.exists():
+    global CODEX_DISABLED
+    if CODEX_DISABLED or not CODEX_CLI.exists():
         return None
     with tempfile.NamedTemporaryFile(prefix="daily-report-codex-", suffix=".json", delete=False) as tmp:
         output_path = Path(tmp.name)
@@ -154,7 +170,8 @@ def codex_json(prompt: str) -> Optional[dict]:
         text = output_path.read_text(encoding="utf-8").strip()
         return parse_json_object(text)
     except Exception as exc:
-        print(f"Codex enrichment skipped: {exc}", file=sys.stderr)
+        print(f"Codex enrichment skipped: {command_error_summary(exc)}", file=sys.stderr)
+        CODEX_DISABLED = True
         return None
     finally:
         try:
@@ -206,7 +223,13 @@ def openai_json(prompt: str, fallback: dict) -> dict:
 
 
 def fetch_youtube(cutoff: datetime) -> list[dict]:
-    run([str(YOUTUBE_PYTHON), str(YOUTUBE_SCRIPT)])
+    try:
+        run([python_command(YOUTUBE_PYTHON), str(YOUTUBE_SCRIPT)])
+    except (FileNotFoundError, subprocess.CalledProcessError) as exc:
+        print(f"YouTube fetch skipped: {command_error_summary(exc)}", file=sys.stderr)
+        return []
+    if not YOUTUBE_JSON.exists():
+        return []
     rows = json.loads(YOUTUBE_JSON.read_text(encoding="utf-8"))
     recent = []
     for row in rows:
@@ -218,11 +241,19 @@ def fetch_youtube(cutoff: datetime) -> list[dict]:
 
 
 def fetch_rss(cutoff_hours: int) -> list[dict]:
+    if not RSS_BASE_OPML.exists():
+        print(f"RSS fetch skipped: OPML is not configured: {RSS_BASE_OPML}", file=sys.stderr)
+        return []
     base_dir = RSS_OUTPUT / "base"
     additional_dir = RSS_OUTPUT / "additional"
-    run([str(RSS_PYTHON), str(RSS_SCRIPT), "--opml", str(RSS_BASE_OPML), "--output-dir", str(base_dir), "--hours", str(cutoff_hours)])
-    if RSS_ADDITIONAL_OPML.exists():
-        run([str(RSS_PYTHON), str(RSS_SCRIPT), "--opml", str(RSS_ADDITIONAL_OPML), "--output-dir", str(additional_dir), "--hours", str(cutoff_hours)])
+    python = python_command(RSS_PYTHON)
+    try:
+        run([python, str(RSS_SCRIPT), "--opml", str(RSS_BASE_OPML), "--output-dir", str(base_dir), "--hours", str(cutoff_hours)])
+        if RSS_ADDITIONAL_OPML.exists():
+            run([python, str(RSS_SCRIPT), "--opml", str(RSS_ADDITIONAL_OPML), "--output-dir", str(additional_dir), "--hours", str(cutoff_hours)])
+    except (FileNotFoundError, subprocess.CalledProcessError) as exc:
+        print(f"RSS fetch skipped: {command_error_summary(exc)}", file=sys.stderr)
+        return []
 
     rows = []
     for path in [base_dir / "recent_feed_items.json", additional_dir / "recent_feed_items.json"]:
